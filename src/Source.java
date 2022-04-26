@@ -26,7 +26,8 @@ public class Source {
 	private int loadedTokensCount;
 	private int doneElementsCount;
 	private String loadPath = "input.txt";
-	private String savePath = "save.txt";
+	private String savePath = "save.txt";	
+	private JLabel arraySortedLabel;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -49,57 +50,45 @@ public class Source {
 		else
 			minLength = str2.length();
 		
-		for(int i = 0; i < minLength; i++)
-		{
-			if(str1.charAt(i) < str2.charAt(i))
-			{
+		for(int i = 0; i < minLength; i++) {
+			if(str1.charAt(i) < str2.charAt(i)) {
 				return str1;
-			}else if (str1.charAt(i) > str2.charAt(i))
-			{
+			}else if (str1.charAt(i) > str2.charAt(i)) {
 				return str2;
 			}
 		}
 		return str1;
 	}
 	
-	public boolean isStr1UpperTnenStr2ByAlphabet(String str1, String str2)
-	{
+	public boolean isStr1UpperTnenStr2ByAlphabet(String str1, String str2) {
 		int minLength = 0;
 		if(str1.length() <= str2.length())
 			minLength = str1.length();
 		else
 			minLength = str2.length();
 		
-		for(int i = 0; i < minLength; i++)
-		{
-			if(str1.charAt(i) < str2.charAt(i))
-			{
+		for(int i = 0; i < minLength; i++) {
+			if(str1.charAt(i) < str2.charAt(i)) {
 				return true;
-			}else if (str1.charAt(i) > str2.charAt(i))
-			{
+			}else if (str1.charAt(i) > str2.charAt(i)) {
 				return false;
 			}
 		}
 		return true;
 	}
 	
-	public void swap(String[] strings, int id1, int id2)
-	{
+	public void swap(String[] strings, int id1, int id2) {
 		String tempStr = strings[id1];
 		strings[id1] = strings[id2];
 		strings[id2] = tempStr;
 	}
 	
-	public int nextSortStep(String[] strings, int doneElementsCount)
-	{
-		if(doneElementsCount >= 0 && doneElementsCount < strings.length)
-		{
+	public int nextSortStep(String[] strings, int doneElementsCount) {
+		if(doneElementsCount >= 0 && doneElementsCount < strings.length) {
 			int uppestID = doneElementsCount;
 			String uppestStr = strings[doneElementsCount];
-			for(int i = doneElementsCount; i < strings.length; i++)
-			{
-				if(isStr1UpperTnenStr2ByAlphabet(strings[i], uppestStr))
-				{
+			for(int i = doneElementsCount; i < strings.length; i++) {
+				if(isStr1UpperTnenStr2ByAlphabet(strings[i], uppestStr)) {
 					uppestStr = strings[i];
 					uppestID = i;
 				}
@@ -110,8 +99,7 @@ public class Source {
 		return doneElementsCount;
 	}
 	
-	public int sortArray(String[] strings, int doneElementsCount)
-	{
+	public int sortArray(String[] strings, int doneElementsCount) {
 		while(doneElementsCount < strings.length)
 			doneElementsCount = nextSortStep(strings, doneElementsCount);
 		return doneElementsCount;
@@ -119,31 +107,6 @@ public class Source {
 
 	public Source() {
 		initialize();
-		/*
-		try {
-			
-			Scanner sc = new Scanner(new File("input.txt"));
-
-			String inputStr = new String();
-			
-			while(sc.hasNextLine())
-				inputStr = inputStr + sc.nextLine();
-			
-			StringTokenizer st = new StringTokenizer(inputStr, " \t\n\r,.");
-			String[] tokens = new String[st.countTokens()];
-			
-			for(int i = 0; i < st.countTokens(); i++)
-				tokens[i] = st.nextToken();
-
-			
-			outputTextArea.setText(tokens[1]);
-			
-
-			
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		*/
 	}
 
 	private void initialize() {
@@ -159,13 +122,13 @@ public class Source {
 		JButton loadButton = new JButton("Load");
 		loadButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				arraySortedLabel.setVisible(false);
 				Scanner sc;
 				try {
 					JFileChooser fileChooser = new JFileChooser(loadPath);
 					int returnValue = fileChooser.showOpenDialog(null);
 					
-					if(returnValue == JFileChooser.APPROVE_OPTION)
-					{
+					if(returnValue == JFileChooser.APPROVE_OPTION) {
 						File selectedFile = fileChooser.getSelectedFile();
 						loadPath = selectedFile.getAbsolutePath();
 					}
@@ -183,13 +146,10 @@ public class Source {
 					loadedTokensCount = st.countTokens();
 					
 					int j = 0;
-					while(st.hasMoreTokens())
-					{
+					while(st.hasMoreTokens()) {
 						loadedTokens[j] = st.nextToken();	
 						j++;
-					}
-					
-					String outputString = new String();						
+					}									
 					outputTextArea.setText(inputStr);
 				} catch (FileNotFoundException e1) {
 					e1.printStackTrace();
@@ -205,11 +165,17 @@ public class Source {
 				
 				doneElementsCount = nextSortStep(loadedTokens, doneElementsCount);
 				
-				String outputString = new String();					
-				for(int i = 0; i < loadedTokensCount; i++)
-					outputString = outputString + loadedTokens[i] + "\n";
-				
-				outputTextArea.setText(outputString);
+				if(doneElementsCount < loadedTokens.length) {
+					arraySortedLabel.setVisible(false);
+					String outputString = new String();					
+					for(int i = 0; i < loadedTokensCount; i++)
+						outputString = outputString + loadedTokens[i] + "\n";
+					
+					outputTextArea.setText(outputString);
+				}
+				else {
+					arraySortedLabel.setVisible(true);
+				}
 			}
 		});
 		nextSortStepButton.setBounds(606, 221, 131, 34);
@@ -227,8 +193,7 @@ public class Source {
 				JFileChooser fileChooser = new JFileChooser(loadPath);
 				int returnValue = fileChooser.showSaveDialog(null);
 				
-				if(returnValue == JFileChooser.APPROVE_OPTION)
-				{
+				if(returnValue == JFileChooser.APPROVE_OPTION) {
 					File selectedFile = fileChooser.getSelectedFile();
 					savePath = selectedFile.getAbsolutePath();
 				}
@@ -255,6 +220,7 @@ public class Source {
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
+				arraySortedLabel.setVisible(false);
 				doneElementsCount = 0;
 				try {
 					Scanner sc = new Scanner(new File(loadPath));
@@ -269,8 +235,7 @@ public class Source {
 					loadedTokensCount = st.countTokens();
 					
 					int j = 0;
-					while(st.hasMoreTokens())
-					{
+					while(st.hasMoreTokens()) {
 						loadedTokens[j] = st.nextToken();	
 						j++;
 					}				
@@ -297,9 +262,16 @@ public class Source {
 				for(int i = 0; i < loadedTokensCount; i++)
 					outputString = outputString + loadedTokens[i] + "\n";
 				outputTextArea.setText(outputString);
+				arraySortedLabel.setVisible(true);
 			}
 		});
 		sortArrayButton.setBounds(606, 265, 131, 34);
 		frame.getContentPane().add(sortArrayButton);
+		
+		arraySortedLabel = new JLabel("Array sorted");
+		arraySortedLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		arraySortedLabel.setBounds(597, 328, 140, 13);
+		frame.getContentPane().add(arraySortedLabel);
+		arraySortedLabel.setVisible(false);
 	}
 }
